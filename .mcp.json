@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "discord-relay": {
+      "command": "bun",
+      "args": ["run", "--cwd", "{{mcpServerDir}}", "--shell=bun", "--silent", "start"]
+    }
+  }
+}

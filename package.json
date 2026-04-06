@@ -1,0 +1,16 @@
+{
+  "name": "claude-discord-relay",
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "bin": "./src/bridge-server.ts",
+  "scripts": {
+    "start": "bun install --no-summary && bun src/bridge-server.ts",
+    "relay": "bun install --no-summary && bun src/relay-daemon.ts",
+    "ctl": "bun src/relay-ctl.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "discord.js": "^14.14.0"
+  }
+}

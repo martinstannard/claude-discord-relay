@@ -1,0 +1,6 @@
+{
+  "name": "discord-relay",
+  "description": "Discord relay for Claude Code — multi-session support via a shared bot with channel/thread routing.",
+  "version": "0.1.0",
+  "keywords": ["discord", "messaging", "channel", "mcp", "relay", "multi-session"]
+}
