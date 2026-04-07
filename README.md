@@ -67,20 +67,38 @@ bun src/relay-ctl.ts start
 bun src/relay-daemon.ts
 ```
 
-### 6. Connect Claude Code sessions
+### 6. Add the bridge to your MCP config
+
+Add to your project's `.mcp.json` (or `~/.claude/.mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "discord-relay": {
+      "command": "bun",
+      "args": ["run", "--cwd", "/path/to/claude-discord-relay", "--shell=bun", "--silent", "start"],
+      "env": {
+        "DISCORD_RELAY_CHANNELS": "*",
+        "DISCORD_RELAY_LABEL": "main"
+      }
+    }
+  }
+}
+```
+
+### 7. Connect Claude Code sessions
+
+The bridge must be loaded as a **channel** (not a regular MCP server) for inbound notifications to work:
 
 ```bash
 # Session subscribed to all channels (wildcard)
-DISCORD_RELAY_CHANNELS="*" claude --mcp discord-relay
+claude --dangerously-load-development-channels server:discord-relay
 
-# Session scoped to specific channels
-DISCORD_RELAY_CHANNELS="123456789,987654321" claude --mcp discord-relay
+# To scope a session to specific channels, change the env in .mcp.json:
+# "DISCORD_RELAY_CHANNELS": "123456789,987654321"
 
-# Session scoped to a specific thread
-DISCORD_RELAY_THREADS="111222333" claude --mcp discord-relay
-
-# With a label for identification
-DISCORD_RELAY_LABEL="pr-review" DISCORD_RELAY_CHANNELS="123456789" claude --mcp discord-relay
+# For thread-scoped sessions:
+# "DISCORD_RELAY_THREADS": "111222333"
 ```
 
 ## Tools

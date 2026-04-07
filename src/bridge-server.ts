@@ -211,16 +211,22 @@ function deliverInbound(): void {
     const msg = inboundQueue.shift()!
     if (msg.type !== 'message') continue
 
-    const attList = msg.attachments.map(a => `${a.name} (${a.contentType}, ${a.size}B)`).join(', ')
-    const attAttr = msg.attachmentCount > 0
-      ? ` attachment_count="${msg.attachmentCount}" attachments="${attList}"`
-      : ''
-
-    const body = `<channel source="plugin:discord-relay:discord" chat_id="${msg.channelId}" message_id="${msg.messageId}" user="${msg.authorUsername}" user_id="${msg.authorId}" ts="${msg.ts}"${attAttr}>\n${msg.content}\n</channel>`
+    const atts = msg.attachments.map(a => `${a.name} (${a.contentType}, ${a.size}B)`).join('; ')
+    const content = msg.content || (msg.attachmentCount > 0 ? '(attachment)' : '')
 
     mcp.notification({
       method: 'notifications/claude/channel',
-      params: { channel: 'discord-relay', body },
+      params: {
+        content,
+        meta: {
+          chat_id: msg.channelId,
+          message_id: msg.messageId,
+          user: msg.authorUsername,
+          user_id: msg.authorId,
+          ts: msg.ts,
+          ...(msg.attachmentCount > 0 ? { attachment_count: String(msg.attachmentCount), attachments: atts } : {}),
+        },
+      },
     }).catch(err => {
       process.stderr.write(`discord-bridge: failed to deliver inbound: ${err}\n`)
     })
